@@ -1,0 +1,16 @@
+{
+    "compilerOptions":{
+	"strict": true,
+	"module": "Es2020",
+	"target": "Es2020",
+	"rootDir": "src",
+	"outDir": "dist",
+	"moduleResolution": "node",
+	"skipLibCheck": true,
+	"forceConsistentCasingInFileNames": true,
+	"esModuleInterop":true,
+	"allowSyntheticDefaultImports": true,
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_package","dist"]
+}

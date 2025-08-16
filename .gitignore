@@ -1,1 +1,3 @@
-hello world
+node_modules/
+.env
+.config.ts

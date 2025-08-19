@@ -1,14 +1,14 @@
+import { BadError_Response, InternalError_Response } from "./apiResponse";
 enum ErrorType {
   BAD_REQUEST = "BadRequest",
 }
-import { BadError_Response } from "./apiResponse";
 export abstract class ApiError extends Error {
-  constructor(message, types) {
+  constructor(message: string) {
+    super(message);
     this.message = message;
     this.types = this;
-    super(this.message);
   }
-  handler(err: ApiError, res: Response) {
+  static handler(err: ApiError, res: Response) {
     switch (err.types) {
       case ErrorType.BAD_REQUEST:
         return new BadError_Response(err.message).send(res);
@@ -19,6 +19,11 @@ export abstract class ApiError extends Error {
 }
 export class BadRequest extends ApiError {
   constructor(message: string) {
-    super(this.message);
+    super(message);
+  }
+}
+export class InternalError extends ApiError {
+  constructor(message: string) {
+    super(message);
   }
 }

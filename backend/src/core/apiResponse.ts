@@ -1,40 +1,50 @@
 import type { Response } from "express";
 enum ResponseStatus {
   SUCCESS = 200,
-  BAD_REQUEST = 404,
+  BAD_REQUEST = 400,
+  INTERNAL_ERROR = 500,
 }
+
 abstract class ApiResponse {
-  constructor(status, message) {
-    this.message = message;
-    this.status = status;
+  constructor(
+    public status: number,
+    public message: string,
+  ) {}
+  protected process(data, res: Response) {
+    return res.status(this.status).json(this.sanitize(data));
   }
-  protected process() {}
   send(res: Response) {
-    return;
+    return this.process(this, res);
   }
-  private sanitize() {}
+  private sanitize(data) {
+    const { status, ...clone } = data;
+    return clone;
+  }
 }
 export class BadError_Response extends ApiResponse {
-  constructor(
-    status: number = ResponseStatus.BAD_REQUEST,
-    message: string = "Bad request",
-  ) {
-    super(status, message);
+  constructor(message: string = "Bad request") {
+    super(ResponseStatus.BAD_REQUEST, message);
   }
 }
 export class InternalError_Response extends ApiResponse {
-  constructor(
-    status: number = ResponseStatus.INTERNAL_ERROR,
-    message: string = "Internal server error",
-  ) {
-    super(status, message);
+  constructor(message: string = "Internal server error") {
+    super(ResponseStatus.INTERNAL_ERROR, message);
   }
 }
 export class SuccessMsgResponse extends ApiResponse {
+  constructor(message: string = " Successfull") {
+    super(ResponseStatus.SUCCESS, message);
+  }
+}
+export class SuccessResponse extends ApiResponse {
   constructor(
-    status: number = ResponseStatus.Success,
-    message: string = " Successfull",
+    public message: string,
+    protected data: object,
+    public status: number = ResponseStatus.SUCCESS,
   ) {
     super(status, message);
+  }
+  send(res: Response) {
+    return super.process(this, res);
   }
 }

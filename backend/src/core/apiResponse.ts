@@ -3,6 +3,7 @@ enum ResponseStatus {
   SUCCESS = 200,
   BAD_REQUEST = 400,
   INTERNAL_ERROR = 500,
+  UN_SUPPORTED_TYPE = 415,
 }
 
 abstract class ApiResponse {
@@ -22,12 +23,12 @@ abstract class ApiResponse {
   }
 }
 export class BadError_Response extends ApiResponse {
-  constructor(message: string = "Bad request") {
+  constructor(message: string) {
     super(ResponseStatus.BAD_REQUEST, message);
   }
 }
 export class InternalError_Response extends ApiResponse {
-  constructor(message: string = "Internal server error") {
+  constructor(message: string) {
     super(ResponseStatus.INTERNAL_ERROR, message);
   }
 }
@@ -46,5 +47,10 @@ export class SuccessResponse extends ApiResponse {
   }
   send(res: Response) {
     return super.process(this, res);
+  }
+}
+export class UnSupportedType extends ApiResponse {
+  constructor(public message: string) {
+    super(Response.UN_SUPPORTED_TYPE, message);
   }
 }

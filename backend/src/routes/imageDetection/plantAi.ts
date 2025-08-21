@@ -4,20 +4,20 @@ import multer from "multer";
 import { BadRequest } from "../../helper/apiError";
 import imageService from "../../core/imageService";
 import { SuccessResponse } from "../../core/apiResponse";
+import { multipartMiddleware } from "../../middleware/middleware";
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+
 router.post(
   "/diagnose",
+  multipartMiddleware,
   upload.single("image"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.file) {
-        console.log("No file to show");
-      }
       const data = await imageService(req.file.buffer);
       new SuccessResponse(data, "Successfully fetch the data").send(res);
     } catch (err: any) {
-      return next(err);
+      throw err;
     }
   },
 );

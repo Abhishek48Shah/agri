@@ -4,14 +4,20 @@ import multer from "multer";
 import { BadRequest } from "../../helper/apiError";
 import imageService from "../../core/imageService";
 import { SuccessResponse } from "../../core/apiResponse";
-import { multipartMiddleware } from "../../middleware/middleware";
+import {
+  multipartMiddleware,
+  fileMiddleware,
+} from "../../middleware/middleware";
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
-
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 router.post(
   "/diagnose",
   multipartMiddleware,
   upload.single("image"),
+  fileMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await imageService(req.file.buffer);
